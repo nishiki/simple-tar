@@ -3,11 +3,16 @@ module Archive # :nodoc:
 		module Stat # :nodoc:
 			def tar_type
 				case self.ftype
-					when 'file':             :file
-					when 'directory':        :directory
-					when 'blockSpecial':     :block
-					when 'characterSpecial': :character
-					when 'link':             :symlink
+					when 'file'
+						:file
+					when 'directory'
+						:directory
+					when 'blockSpecial'
+						:block
+					when 'characterSpecial'
+						:character
+					when 'link'
+						:symlink
 				end
 			end
 		end

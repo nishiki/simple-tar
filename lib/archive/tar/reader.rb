@@ -12,8 +12,11 @@ class Archive::Tar::Reader
 
 	def each(full = false, &block)
 		case @source
-			when IO: parse(@source, full); @source.rewind
-			else     File.open(@source, 'r') { |f| parse(f, full) }
+			when IO
+				parse(@source, full)
+				@source.rewind
+			else     
+				File.open(@source, 'r') { |f| parse(f, full) }
 		end
 
 		@index.each { |path| yield *(@records[path]) }
@@ -31,10 +34,14 @@ class Archive::Tar::Reader
 			FileUtils.mkdir_p( File.dirname(path) )
 
 			case header[:type]
-				when :file:       File.open(path, 'w') { |fio| fio.write(body) }
-				when :directory:  FileUtils.mkdir(path)
-				when :link:       File.link( File.join(dest, header[:dest]), path )
-				when :symlink:    File.symlink( header[:dest], path )
+				when :file
+					File.open(path, 'w') { |fio| fio.write(body) }
+				when :directory
+					FileUtils.mkdir(path)
+				when :link
+					File.link( File.join(dest, header[:dest]), path )
+				when :symlink
+					File.symlink( header[:dest], path )
 			end
 
 			if options[:permissions] == :preserve && !File.symlink?(path)
